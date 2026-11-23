@@ -80,11 +80,11 @@ namespace Class_KhoiND.Services
             return null;
         }
 
-        public async Task<List<Item>> SearchAsync(int x1, string? x2, string? x3)
+        public async Task<List<Item>> SearchAsync(int x1)
         {
             try
             {
-                var items = await _repository.SearchAsync(x1, x2, x3);
+                var items = await _repository.SearchAsync(x1);
                 return items;
             }
             catch (Exception e)

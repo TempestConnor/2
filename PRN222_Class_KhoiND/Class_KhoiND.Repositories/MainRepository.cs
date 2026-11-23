@@ -54,12 +54,12 @@ namespace Class_KhoiND.Repositories
         }
 
 
-        public async Task<List<Item>> SearchAsync(int? condition1, string? condition2, string? condition3)
+        public async Task<List<Item>> SearchAsync(int? groupId)
         {
             return await _context.Items
                 .AsNoTracking()
                 .Include(i => i.Group)
-                .Where(i => condition1 == null || i.GroupId == condition1
+                .Where(i => groupId == null || i.GroupId == groupId
                 // && (string.IsNullOrEmpty(condition2) || i.CONDITION2.Contains(condition2))
                 // && (string.IsNullOrEmpty(condition3) || i.CONDITION3 == condition3)
                 )

@@ -1,44 +1,77 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Class_KhoiND.Repositories.Models;
+using Class_KhoiND.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Class_KhoiND.Repositories.Models;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace PRN222_Class_KhoiND.Pages_Equipment
 {
     public class CreateModel : PageModel
     {
-        private readonly Class_KhoiND.Repositories.Models.PRN222_PE01_2Context _context;
+        private readonly IMainService _mainService;
+        private readonly SecondaryService _secondaryService;
 
-        public CreateModel(Class_KhoiND.Repositories.Models.PRN222_PE01_2Context context)
-        {
-            _context = context;
-        }
+        [BindProperty] public string? Name { get; set; }
+        [BindProperty] public int? GroupId { get; set; }
+        [BindProperty(Name = "Amount")] public string? AmountText { get; set; }
 
-        public IActionResult OnGet()
-        {
-        ViewData["GroupId"] = new SelectList(_context.LookupGroups, "GroupId", "Name");
-            return Page();
-        }
+        public List<LookupGroup> Groups { get; set; } = new();
 
-        [BindProperty]
-        public Item Item { get; set; } = default!;
+        public async Task OnGetAsync() => await LoadGroups();
 
-        // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
+            await LoadGroups();
+
+
+            //
+            // ERROR MESSAGES
+            //
+            var name = Name?.Trim();
+            if (string.IsNullOrEmpty(name))
+                ModelState.AddModelError("Name", "Name is required");   // use the paper's wording
+            else if (name.Length > 50)
+                ModelState.AddModelError("Name", "Name must be at most 50 characters");
+
+            if (GroupId == null || !Groups.Any(g => g.GroupId == GroupId))
+                ModelState.AddModelError("GroupId", "Group is required");
+
+            decimal amount = 0;
+            var text = AmountText?.Trim();
+            if (string.IsNullOrEmpty(text))
+                ModelState.AddModelError("Amount", "Amount is required");
+            else if (!decimal.TryParse(text, NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign,
+                         CultureInfo.InvariantCulture, out amount))
+                ModelState.AddModelError("Amount", "Amount must be a number");
+            else if (amount < 0 || amount > 1000)
+                ModelState.AddModelError("Amount", "Amount must be between 0 and 1000");
+            else if (decimal.Round(amount, 2) != amount)
+                ModelState.AddModelError("Amount", "Amount can have at most 2 decimal places");
+            //
+            //
+            //
+           
+
+            if (!ModelState.IsValid) return Page();
+
+            await _mainService.CreateAsync(new Item
             {
-                return Page();
-            }
+                Name = name!,
+                GroupId = GroupId!.Value,
+                Amount = amount,
+                EventDate = new DateOnly(2026, 3, 10),
+                Status = "Pending"
+            });
 
-            _context.Items.Add(Item);
-            await _context.SaveChangesAsync();
-
-            return RedirectToPage("./Index");
+            return RedirectToPage("Index");
         }
+
+        private async Task LoadGroups() =>
+            Groups = (await _secondaryService.GetAllAsync()).OrderBy(g => g.Name).ToList();
     }
 }

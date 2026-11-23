@@ -2,7 +2,7 @@
 @model PRN222_Class_KhoiND.Pages_Equipment.CreateModel
 
 @{
-    ViewData["Title"] = "Create";
+    Layout = null;
 }
 
 <!DOCTYPE html>
@@ -109,9 +109,9 @@
 <body>
     <!-- Static UI reference for /Camera/Create. -->
     <main>
-        <h1>Create Camera</h1>
+        <h1>Create Equipment</h1>
 
-        <form method="post" action="/Camera/Create" novalidate>
+        <form method="post" novalidate>
             <div class="field">
                 <label for="txt_name">Name</label>
                 <input id="txt_name" name="Name" type="text" value="" aria-describedby="val_name">

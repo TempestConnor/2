@@ -6,24 +6,31 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Class_KhoiND.Repositories.Models;
+using Class_KhoiND.Services;
 
 namespace PRN222_Class_KhoiND.Pages_Equipment
 {
     public class IndexModel : PageModel
     {
-        private readonly Class_KhoiND.Repositories.Models.PRN222_PE01_2Context _context;
+        private readonly IMainService _service;
+        private readonly SecondaryService _secondaryService;
 
-        public IndexModel(Class_KhoiND.Repositories.Models.PRN222_PE01_2Context context)
+        public IndexModel(IMainService service, SecondaryService secondaryService)
         {
-            _context = context;
+            _service = service;
+            _secondaryService = secondaryService;
         }
 
-        public IList<Item> Item { get;set; } = default!;
+        [BindProperty(SupportsGet = true)]
+        public int GroupId { get; set; }
+        public List<LookupGroup> Groups { get; set; } = new();
+        public List<Item> Items { get; set; } = new();
 
         public async Task OnGetAsync()
         {
-            Item = await _context.Items
-                .Include(i => i.Group).ToListAsync();
+            Groups = (await _secondaryService.GetAllAsync()).OrderBy(g => g.Name).ToList();
+            Items = await _service.SearchAsync(GroupId);
+
         }
     }
 }

@@ -15,7 +15,7 @@ namespace Class_KhoiND.Services
 
         Task<Item> GetByIdAsync(int id);
 
-        Task<List<Item>> SearchAsync(int x1, string? x2, string x3);
+        Task<List<Item>> SearchAsync(int x1);
 
         Task<int> CreateAsync(Item bc);
 

@@ -15,7 +15,6 @@ builder.Services.AddRazorPages(options =>
 {
     options.Conventions.AddPageRoute("/Equipment/Index", "");
 });
-builder.Services.AddDbContext<PRN222_PE01_2Context>();
 
 //If need authentication
 //builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
