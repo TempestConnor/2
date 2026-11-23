@@ -34,7 +34,7 @@ public partial class PRN222_PE01_2Context : DbContext
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer(GetConnectionString("DefaultConnection")).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+        => optionsBuilder.UseSqlServer(GetConnectionString("ExamDb")).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 
 
     //REMEMBER TO COMMENT OUT the OnConfiguring in the file and use the one in the fix

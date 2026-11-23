@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Class_KhoiND.Repositories;
+using Class_KhoiND.Repositories.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,22 +14,22 @@ namespace Class_KhoiND.Services
         //RPB repository của bảng phụ
         //NLTS tên service của bảng phụ ( contructor)
 
-        //private readonly RPB _repository;
+        private readonly SecondaryRepository _repository;
 
-        //public NLTS() => _repository = new RPB();
+        public SecondaryService() => _repository = new SecondaryRepository();
 
 
-        //public async Task<List<BP>> GetAllAsync()
-        //{
-        //    try
-        //    {
-        //        var items = await _repository.GetAllAsync();
-        //        return items;
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        throw new Exception(e.Message);
-        //    }
-        //}
+        public async Task<List<LookupGroup>> GetAllAsync()
+        {
+            try
+            {
+                var items = await _repository.GetAllAsync();
+                return items;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
     }
 }
